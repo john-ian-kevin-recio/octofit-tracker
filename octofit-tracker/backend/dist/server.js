@@ -4,7 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
-const mongoose_1 = __importDefault(require("mongoose"));
+const database_1 = require("./config/database");
 const config_1 = require("./config");
 const activities_1 = __importDefault(require("./routes/activities"));
 const leaderboard_1 = __importDefault(require("./routes/leaderboard"));
@@ -35,7 +35,7 @@ app.use((error, _req, res, _next) => {
 });
 const startServer = async () => {
     try {
-        await mongoose_1.default.connect(config_1.mongoUri);
+        await (0, database_1.connectDatabase)();
         console.log(`Connected to MongoDB at ${config_1.mongoUri}`);
         app.listen(config_1.port, () => {
             console.log(`API listening on ${config_1.baseUrl}`);

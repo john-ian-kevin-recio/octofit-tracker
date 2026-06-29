@@ -1,5 +1,5 @@
 import express from 'express';
-import mongoose from 'mongoose';
+import { connectDatabase } from './config/database';
 import { baseUrl, mongoUri, port } from './config';
 import activitiesRouter from './routes/activities';
 import leaderboardRouter from './routes/leaderboard';
@@ -38,7 +38,7 @@ app.use((error: unknown, _req: express.Request, res: express.Response, _next: ex
 
 const startServer = async () => {
   try {
-    await mongoose.connect(mongoUri);
+    await connectDatabase();
     console.log(`Connected to MongoDB at ${mongoUri}`);
 
     app.listen(port, () => {
