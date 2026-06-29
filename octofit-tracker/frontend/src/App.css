@@ -1,0 +1,16 @@
+.app-shell {
+  min-height: 100vh;
+}
+
+.app-header {
+  background: linear-gradient(120deg, #f7f4e8 0%, #e8f1f8 55%, #f5ece9 100%);
+}
+
+.app-nav {
+  background-color: #ffffff;
+}
+
+.table,
+.card {
+  background-color: #ffffff;
+}
