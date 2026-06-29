@@ -5,24 +5,40 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const mongoose_1 = __importDefault(require("mongoose"));
+const config_1 = require("./config");
+const activities_1 = __importDefault(require("./routes/activities"));
+const leaderboard_1 = __importDefault(require("./routes/leaderboard"));
+const teams_1 = __importDefault(require("./routes/teams"));
+const users_1 = __importDefault(require("./routes/users"));
+const workouts_1 = __importDefault(require("./routes/workouts"));
 const app = (0, express_1.default)();
-const port = Number(process.env.PORT) || 8000;
-const mongoUri = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/octofit_db';
 app.use(express_1.default.json());
-app.get('/api/health', (_req, res) => {
+const apiRouter = express_1.default.Router();
+apiRouter.get('/health', (_req, res) => {
     res.json({
         status: 'ok',
         service: 'octofit-backend',
-        port,
-        mongoUri,
+        baseUrl: config_1.baseUrl,
+        port: config_1.port,
+        mongoUri: config_1.mongoUri,
     });
+});
+apiRouter.use('/users', users_1.default);
+apiRouter.use('/teams', teams_1.default);
+apiRouter.use('/activities', activities_1.default);
+apiRouter.use('/leaderboard', leaderboard_1.default);
+apiRouter.use('/workouts', workouts_1.default);
+app.use('/api', apiRouter);
+app.use((error, _req, res, _next) => {
+    const message = error instanceof Error ? error.message : 'Unexpected error';
+    res.status(500).json({ error: message });
 });
 const startServer = async () => {
     try {
-        await mongoose_1.default.connect(mongoUri);
-        console.log(`Connected to MongoDB at ${mongoUri}`);
-        app.listen(port, () => {
-            console.log(`API listening on http://localhost:${port}`);
+        await mongoose_1.default.connect(config_1.mongoUri);
+        console.log(`Connected to MongoDB at ${config_1.mongoUri}`);
+        app.listen(config_1.port, () => {
+            console.log(`API listening on ${config_1.baseUrl}`);
         });
     }
     catch (error) {
